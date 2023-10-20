@@ -40,7 +40,7 @@ mongoose
     .catch((e) => {
     console.log('mongoose error', e);
 });
-server.listen(port, host, () => {
+server.listen(port, () => {
     console.log(`Server started and running on port ${port}`);
 });
 //# sourceMappingURL=index.js.map
