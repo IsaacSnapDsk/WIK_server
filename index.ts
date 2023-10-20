@@ -1,7 +1,5 @@
 require('dotenv').config();
 
-
-
 // importing modules
 const http = require("http");
 const mongoose = require("mongoose");

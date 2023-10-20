@@ -3,7 +3,7 @@ require('dotenv').config();
 const http = require("http");
 const mongoose = require("mongoose");
 // const app = express();
-const host = process.env.HOST || "localhost";
+// const host = process.env.HOST || "localhost";
 const port = process.env.PORT || 3000;
 const server = http.createServer();
 var io = require("socket.io")(server);
@@ -17,7 +17,6 @@ const url = process.env.MONGO_URL;
 const DB = url.replace("<password>", password);
 /// SOCKET CONNECTION
 io.on("connection", (socket) => {
-    console.log('initial connection', socket)
     //  When disconnecting, we need to set the bool on this player to say they disconnected
     socket.on('disconnecting', disconnecting);
     socket.on("createRoom", createRoom);

@@ -1,0 +1,5 @@
+/node_modules
+.env
+.env.dusk.local
+*.log
+.DS_Store
