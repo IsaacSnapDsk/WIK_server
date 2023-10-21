@@ -70,7 +70,7 @@ const calculateBets = async (room): Promise<Room> => {
         room.players[playerIdx].scores.push(score)
 
         //  Add a win to the player if they won this round
-        room.players[playerIdx].wins + win ? 1 : 0
+        room.players[playerIdx].wins += win ? 1 : 0
 
         //  The player's "punished" value depends on if they won or not
         room.players[playerIdx].punished = win
