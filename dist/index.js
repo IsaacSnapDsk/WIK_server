@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const port = process.env.PORT || 3000;
 const server = http.createServer();
 var io = require("socket.io")(server);
-const { disconnecting, createRoom, joinRoom, startGame, submitBet, stopBetting, stopWaiting, stopPunishing, submitScores, nextRound, startHalftime, stopHalftime } = require("./src/methods/methods")(io);
+const { disconnecting, createRoom, joinRoom, startGame, submitBet, stopBetting, stopWaiting, stopPunishing, submitScores, nextRound, startHalftime, stopHalftime, removePlayer, } = require("./src/methods/methods")(io);
 // const rounds: Round[] = []
 //  Grab our password from our env
 const password = process.env.MONGO_PASSWORD;
@@ -30,6 +30,7 @@ io.on("connection", (socket) => {
     socket.on("nextRound", nextRound);
     socket.on("startHalftime", startHalftime);
     socket.on("stopHalftime", stopHalftime);
+    socket.on('removePlayer', removePlayer);
 });
 mongoose
     .connect(DB)
