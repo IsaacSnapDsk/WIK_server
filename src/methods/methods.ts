@@ -713,6 +713,47 @@ module.exports = (io) => {
         }
     }
 
+    const removePlayer = async function ({ roomId, gmId, playerId }) {
+        const socket = this
+        try {
+            //  Grab our current room
+            const room = await roomModel.findById(roomId)
+
+            //  If it isn't found, return an error
+            if (!room) return socket.emit("errorOccurred", "Room not found.")
+
+            //  Find our game master with this secret
+            const gameMaster = await gameMasterModel.findById(gmId)
+
+            //  If it isn't found, return an error
+            if (!gameMaster) return socket.emit("errorOccurred", "Game Master not found")
+
+            //  Check if this game master belongs to this room
+            const belongs = gameMaster.roomId === roomId
+
+            //  If they dont, return an error
+            if (!belongs) return socket.emit("errorOccurred", "Game Master and Room do not match")
+
+            //  Find the player with this id in the room
+            // const idx = room.players.findIndex(x => x.id.toString() == playerId)
+
+            // //  If it isn't found, we're done
+            // if (idx == -1) return
+
+            //  Else, remove them
+            room.players.pull({ _id: playerId })
+
+            //  Save the changes to our room
+            const savedRoom = await room.save()
+
+            //  Return our new room
+            io.to(roomId).emit("roomUpdateSuccess", savedRoom)
+        }
+        catch (e) {
+            console.log(`Error starting halftime ${e}`)
+        }
+    }
+
     return {
         disconnecting,
         createRoom,
@@ -725,6 +766,7 @@ module.exports = (io) => {
         submitScores,
         nextRound,
         startHalftime,
-        stopHalftime
+        stopHalftime,
+        removePlayer,
     }
 }

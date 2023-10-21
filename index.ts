@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+
+
 // importing modules
 const http = require("http");
 const mongoose = require("mongoose");
@@ -22,7 +24,8 @@ const {
     submitScores,
     nextRound,
     startHalftime,
-    stopHalftime
+    stopHalftime,
+    removePlayer,
 } = require("./src/methods/methods")(io)
 
 
@@ -64,6 +67,8 @@ io.on("connection", (socket) => {
     socket.on("startHalftime", startHalftime)
 
     socket.on("stopHalftime", stopHalftime)
+
+    socket.on('removePlayer', removePlayer)
 });
 
 mongoose
