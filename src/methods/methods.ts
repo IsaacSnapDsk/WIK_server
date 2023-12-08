@@ -585,8 +585,20 @@ module.exports = (io) => {
             //  Save the changes
             const savedRoom = await room.save()
 
+            //  Find our player
+            const actual = await playerModel.findById(playerId)
+
+            //  Update this player's punished
+            actual.punished = false
+
+            //  Save the changes
+            const savedPlayer = await actual.save()
+
             //  Notify the player
             io.to(roomId).emit('submitScoresSuccess', savedRoom)
+
+            //  Notify about player updates
+            socket.emit('playerCreatedSuccess', savedPlayer)
         }
         catch (e) {
             console.log(`Error submitting punishment ${e}`)
