@@ -43,6 +43,8 @@ const DB = url.replace("<password>", password)
 
 /// SOCKET CONNECTION
 io.on("connection", (socket) => {
+    console.log('socket', socket)
+    console.log('reconnecting', socket.recovered)
 
     //  If we recovered, handle recovery
     if (socket.recovered) reconnecting
