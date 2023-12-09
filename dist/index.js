@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
     console.log('logging some');
     //  If we recovered, handle recovery
     // if (socket.recovered) reconnecting
-    reconnecting;
+    reconnecting();
     socket.on('reconnect', (_) => console.log(' reconnect'));
     socket.on('reconnect_attempt', (_) => console.log('attempting reconnect'));
     //  When disconnecting, we need to set the bool on this player to say they disconnected
