@@ -160,6 +160,37 @@ const calculateScores = async (room, io): Promise<Room> => {
 }
 
 module.exports = (io) => {
+    const reconnecting = async function () {
+        const socket = this
+
+        //  Find the player matching this socket id
+        const player = await playerModel.findOne({ 'socketId': socket.id })
+
+        //  If no player was found, then we're good to just stop
+        if (!player) return
+
+        //  Else, we need to say that this player is now reconnected
+        player.connected = true
+
+        //  Save the changes to our player
+        await player.save()
+
+        //  Find the room this player might be part of
+        const room = await roomModel.findOne({ 'players._id': player.id })
+        //  If no room exists? we're done
+        if (!room) return
+
+        //  Else, update the player in this room too
+        const playerIdx = room.players.findIndex((x) => x.id.toString() === player.id.toString())
+        room.players[playerIdx] = player
+
+        //  Save our room
+        const savedRoom = await room.save()
+
+        //  Let the room know about this
+        io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom)
+    }
+
     const disconnecting = async function () {
         const socket = this
 
@@ -779,6 +810,7 @@ module.exports = (io) => {
         nextRound,
         startHalftime,
         stopHalftime,
+        reconnecting,
         removePlayer,
     }
 }
