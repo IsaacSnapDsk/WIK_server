@@ -54,8 +54,8 @@ io.on("connection", (socket) => {
     //  Make sure we are always connected
     socket.emit('rejoinRoomRequest')
 
-    socket.io.on('reconnect', (_) => console.log(' reconnect'))
-    socket.io.on('reconnect_attempt', (_) => console.log('attempting reconnect'))
+    // socket.io.on('reconnect', (_) => console.log(' reconnect'))
+    // socket.io.on('reconnect_attempt', (_) => console.log('attempting reconnect'))
 
     //  When disconnecting, we need to set the bool on this player to say they disconnected
     socket.on('disconnecting', disconnecting)
