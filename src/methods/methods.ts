@@ -160,9 +160,9 @@ const calculateScores = async (room, io): Promise<Room> => {
 }
 
 module.exports = (io) => {
-    const reconnecting = async function () {
+    const reconnecting = async function (socket) {
         console.log('recs')
-        const socket = this
+        // const socket = this
         console.log('starting reconnect')
 
         console.log('socket null', !socket)

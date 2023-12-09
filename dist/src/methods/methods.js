@@ -131,10 +131,10 @@ const calculateScores = (room, io) => __awaiter(void 0, void 0, void 0, function
     return savedRoom;
 });
 module.exports = (io) => {
-    const reconnecting = function () {
+    const reconnecting = function (socket) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('recs');
-            const socket = this;
+            // const socket = this
             console.log('starting reconnect');
             console.log('socket null', !socket);
             const id = socket === null || socket === void 0 ? void 0 : socket.id;
