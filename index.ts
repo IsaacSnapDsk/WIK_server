@@ -25,6 +25,7 @@ const {
     nextRound,
     startHalftime,
     stopHalftime,
+    reconnecting,
     removePlayer,
 } = require("./src/methods/methods")(io)
 
@@ -42,6 +43,9 @@ const DB = url.replace("<password>", password)
 
 /// SOCKET CONNECTION
 io.on("connection", (socket) => {
+
+    //  If we recovered, handle recovery
+    if (socket.recovered) reconnecting
 
     //  When disconnecting, we need to set the bool on this player to say they disconnected
     socket.on('disconnecting', disconnecting)
