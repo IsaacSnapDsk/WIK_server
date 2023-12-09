@@ -133,6 +133,7 @@ const calculateScores = (room, io) => __awaiter(void 0, void 0, void 0, function
 module.exports = (io) => {
     const reconnecting = function () {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('recs');
             const socket = this;
             console.log('starting reconnect');
             //  Find the player matching this socket id
