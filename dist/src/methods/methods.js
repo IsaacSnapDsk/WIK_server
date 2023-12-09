@@ -131,12 +131,35 @@ const calculateScores = (room, io) => __awaiter(void 0, void 0, void 0, function
     return savedRoom;
 });
 module.exports = (io) => {
+    const rejoinRoom = function ({ roomId, playerId }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const socket = this;
+            console.log('rejoining the room');
+            socket.join(roomId);
+            const player = yield playerModel.findById(playerId);
+            if (!player)
+                return;
+            console.log('player found');
+            player.connected = true;
+            const savedPlayer = yield player.save();
+            const room = yield roomModel.findById(roomId);
+            if (!room)
+                return;
+            console.log('room foudnd');
+            const playerIdx = room.players.findIndex((x) => x.id.toString() === player.id.toString());
+            room.players[playerIdx] = player;
+            //  Save our room
+            const savedRoom = yield room.save();
+            io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom);
+        });
+    };
     const reconnecting = function (socket) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('recs');
             // const socket = this
             console.log('starting reconnect');
             console.log('socket null', !socket);
+            socket.join();
             const id = socket === null || socket === void 0 ? void 0 : socket.id;
             if (!id)
                 return;
@@ -701,6 +724,7 @@ module.exports = (io) => {
         startHalftime,
         stopHalftime,
         reconnecting,
+        rejoinRoom,
         removePlayer,
     };
 };

@@ -160,12 +160,42 @@ const calculateScores = async (room, io): Promise<Room> => {
 }
 
 module.exports = (io) => {
+    const rejoinRoom = async function ({ roomId, playerId }) {
+        const socket = this
+
+        console.log('rejoining the room')
+        socket.join(roomId)
+
+        const player = await playerModel.findById(playerId)
+
+        if (!player) return
+
+        console.log('player found')
+        player.connected = true
+        const savedPlayer = await player.save()
+
+        const room = await roomModel.findById(roomId)
+
+        if (!room) return
+
+        console.log('room foudnd')
+
+        const playerIdx = room.players.findIndex((x) => x.id.toString() === player.id.toString())
+        room.players[playerIdx] = player
+
+        //  Save our room
+        const savedRoom = await room.save()
+
+        io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom)
+    }
+
     const reconnecting = async function (socket) {
         console.log('recs')
         // const socket = this
         console.log('starting reconnect')
 
         console.log('socket null', !socket)
+        socket.join()
 
         const id = socket?.id
 
@@ -822,6 +852,7 @@ module.exports = (io) => {
         startHalftime,
         stopHalftime,
         reconnecting,
+        rejoinRoom,
         removePlayer,
     }
 }

@@ -26,6 +26,7 @@ const {
     startHalftime,
     stopHalftime,
     reconnecting,
+    rejoinRoom,
     removePlayer,
 } = require("./src/methods/methods")(io)
 
@@ -60,7 +61,7 @@ io.on("connection", (socket) => {
     //  When disconnecting, we need to set the bool on this player to say they disconnected
     socket.on('disconnecting', disconnecting)
 
-    socket.on('rejoinRoom', ({ roomId }) => socket.join(roomId));
+    socket.on('rejoinRoom', rejoinRoom)
 
     socket.on("createRoom", createRoom)
 
