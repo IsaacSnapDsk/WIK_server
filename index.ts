@@ -49,13 +49,18 @@ io.on("connection", (socket) => {
 
     //  If we recovered, handle recovery
     // if (socket.recovered) reconnecting
-    reconnecting(socket)
+    // reconnecting(socket)
 
-    socket.on('reconnect', (_) => console.log(' reconnect'))
-    socket.on('reconnect_attempt', (_) => console.log('attempting reconnect'))
+    //  Make sure we are always connected
+    socket.emit('rejoinRoomRequest')
+
+    socket.io.on('reconnect', (_) => console.log(' reconnect'))
+    socket.io.on('reconnect_attempt', (_) => console.log('attempting reconnect'))
 
     //  When disconnecting, we need to set the bool on this player to say they disconnected
     socket.on('disconnecting', disconnecting)
+
+    socket.on('rejoinRoom', ({ roomId }) => socket.join(roomId));
 
     socket.on("createRoom", createRoom)
 
