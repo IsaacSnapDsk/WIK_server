@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
 
     //  If we recovered, handle recovery
     // if (socket.recovered) reconnecting
-    reconnecting()
+    // reconnecting()
 
     socket.on('reconnect', (_) => console.log(' reconnect'))
     socket.on('reconnect_attempt', (_) => console.log('attempting reconnect'))
