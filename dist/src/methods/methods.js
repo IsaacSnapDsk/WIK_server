@@ -131,6 +131,32 @@ const calculateScores = (room, io) => __awaiter(void 0, void 0, void 0, function
     return savedRoom;
 });
 module.exports = (io) => {
+    const reconnecting = function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const socket = this;
+            //  Find the player matching this socket id
+            const player = yield playerModel.findOne({ 'socketId': socket.id });
+            //  If no player was found, then we're good to just stop
+            if (!player)
+                return;
+            //  Else, we need to say that this player is now reconnected
+            player.connected = true;
+            //  Save the changes to our player
+            yield player.save();
+            //  Find the room this player might be part of
+            const room = yield roomModel.findOne({ 'players._id': player.id });
+            //  If no room exists? we're done
+            if (!room)
+                return;
+            //  Else, update the player in this room too
+            const playerIdx = room.players.findIndex((x) => x.id.toString() === player.id.toString());
+            room.players[playerIdx] = player;
+            //  Save our room
+            const savedRoom = yield room.save();
+            //  Let the room know about this
+            io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom);
+        });
+    };
     const disconnecting = function () {
         return __awaiter(this, void 0, void 0, function* () {
             const socket = this;
@@ -494,8 +520,16 @@ module.exports = (io) => {
                 room.players.set(socketPlayerIdx, socketPlayer);
                 //  Save the changes
                 const savedRoom = yield room.save();
+                //  Find our player
+                const actual = yield playerModel.findById(playerId);
+                //  Update this player's punished
+                actual.punished = false;
+                //  Save the changes
+                const savedPlayer = yield actual.save();
                 //  Notify the player
                 io.to(roomId).emit('submitScoresSuccess', savedRoom);
+                //  Notify about player updates
+                socket.emit('playerCreatedSuccess', savedPlayer);
             }
             catch (e) {
                 console.log(`Error submitting punishment ${e}`);
@@ -657,6 +691,7 @@ module.exports = (io) => {
         nextRound,
         startHalftime,
         stopHalftime,
+        reconnecting,
         removePlayer,
     };
 };

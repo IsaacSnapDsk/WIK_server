@@ -19,6 +19,7 @@ var DB = url.replace("<password>", password);
 io.on("connection", function (socket) {
     console.log('socket', socket);
     console.log('reconnecting', socket.recovered);
+    console.log('logging some');
     //  If we recovered, handle recovery
     if (socket.recovered)
         reconnecting;

@@ -46,6 +46,8 @@ io.on("connection", (socket) => {
     console.log('socket', socket)
     console.log('reconnecting', socket.recovered)
 
+    console.log('logging some')
+
     //  If we recovered, handle recovery
     if (socket.recovered) reconnecting
 
