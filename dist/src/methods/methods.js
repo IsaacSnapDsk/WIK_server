@@ -136,6 +136,10 @@ module.exports = (io) => {
             console.log('recs');
             const socket = this;
             console.log('starting reconnect');
+            console.log('socket null', !socket);
+            const id = socket === null || socket === void 0 ? void 0 : socket.id;
+            if (!id)
+                return;
             //  Find the player matching this socket id
             const player = yield playerModel.findOne({ 'socketId': socket.id });
             //  If no player was found, then we're good to just stop

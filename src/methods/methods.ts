@@ -165,6 +165,12 @@ module.exports = (io) => {
         const socket = this
         console.log('starting reconnect')
 
+        console.log('socket null', !socket)
+
+        const id = socket?.id
+
+        if (!id) return
+
         //  Find the player matching this socket id
         const player = await playerModel.findOne({ 'socketId': socket.id })
 
