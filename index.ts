@@ -25,7 +25,7 @@ const {
     nextRound,
     startHalftime,
     stopHalftime,
-    reconnecting,
+    // reconnecting,
     rejoinRoom,
     removePlayer,
 } = require("./src/methods/methods")(io)
@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
     // reconnecting(socket)
 
     //  Make sure we are always connected
-    socket.emit('rejoinRoomRequest')
+    // socket.emit('rejoinRoomRequest')
 
     // socket.io.on('reconnect', (_) => console.log(' reconnect'))
     // socket.io.on('reconnect_attempt', (_) => console.log('attempting reconnect'))

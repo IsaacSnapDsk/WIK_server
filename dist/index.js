@@ -7,7 +7,9 @@ const mongoose = require("mongoose");
 const port = process.env.PORT || 3000;
 const server = http.createServer();
 var io = require("socket.io")(server);
-const { disconnecting, createRoom, joinRoom, startGame, submitBet, stopBetting, stopWaiting, stopPunishing, submitScores, nextRound, startHalftime, stopHalftime, reconnecting, rejoinRoom, removePlayer, } = require("./src/methods/methods")(io);
+const { disconnecting, createRoom, joinRoom, startGame, submitBet, stopBetting, stopWaiting, stopPunishing, submitScores, nextRound, startHalftime, stopHalftime, 
+// reconnecting,
+rejoinRoom, removePlayer, } = require("./src/methods/methods")(io);
 // const rounds: Round[] = []
 //  Grab our password from our env
 const password = process.env.MONGO_PASSWORD;
@@ -23,7 +25,7 @@ io.on("connection", (socket) => {
     // if (socket.recovered) reconnecting
     // reconnecting(socket)
     //  Make sure we are always connected
-    socket.emit('rejoinRoomRequest');
+    // socket.emit('rejoinRoomRequest')
     // socket.io.on('reconnect', (_) => console.log(' reconnect'))
     // socket.io.on('reconnect_attempt', (_) => console.log('attempting reconnect'))
     //  When disconnecting, we need to set the bool on this player to say they disconnected

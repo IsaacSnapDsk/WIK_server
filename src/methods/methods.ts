@@ -172,6 +172,7 @@ module.exports = (io) => {
 
         console.log('player found')
         player.connected = true
+        player.socketId = socket.id
         const savedPlayer = await player.save()
 
         const room = await roomModel.findById(roomId)
@@ -186,51 +187,51 @@ module.exports = (io) => {
         //  Save our room
         const savedRoom = await room.save()
 
-        io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom)
+        io.to(roomId).emit('roomUpdateSuccess', savedRoom)
     }
 
-    const reconnecting = async function (socket) {
-        console.log('recs')
-        // const socket = this
-        console.log('starting reconnect')
+    // const reconnecting = async function (socket) {
+    //     console.log('recs')
+    //     // const socket = this
+    //     console.log('starting reconnect')
 
-        console.log('socket null', !socket)
-        socket.join()
+    //     console.log('socket null', !socket)
+    //     socket.join()
 
-        const id = socket?.id
+    //     const id = socket?.id
 
-        if (!id) return
+    //     if (!id) return
 
-        //  Find the player matching this socket id
-        const player = await playerModel.findOne({ 'socketId': socket.id })
+    //     //  Find the player matching this socket id
+    //     const player = await playerModel.findOne({ 'socketId': socket.id })
 
-        //  If no player was found, then we're good to just stop
-        if (!player) return
-        console.log('player exists')
+    //     //  If no player was found, then we're good to just stop
+    //     if (!player) return
+    //     console.log('player exists')
 
-        //  Else, we need to say that this player is now reconnected
-        player.connected = true
+    //     //  Else, we need to say that this player is now reconnected
+    //     player.connected = true
 
-        //  Save the changes to our player
-        await player.save()
+    //     //  Save the changes to our player
+    //     await player.save()
 
-        //  Find the room this player might be part of
-        const room = await roomModel.findOne({ 'players._id': player.id })
-        //  If no room exists? we're done
-        if (!room) return
+    //     //  Find the room this player might be part of
+    //     const room = await roomModel.findOne({ 'players._id': player.id })
+    //     //  If no room exists? we're done
+    //     if (!room) return
 
-        console.log('room found')
-        //  Else, update the player in this room too
-        const playerIdx = room.players.findIndex((x) => x.id.toString() === player.id.toString())
-        room.players[playerIdx] = player
+    //     console.log('room found')
+    //     //  Else, update the player in this room too
+    //     const playerIdx = room.players.findIndex((x) => x.id.toString() === player.id.toString())
+    //     room.players[playerIdx] = player
 
-        //  Save our room
-        const savedRoom = await room.save()
-        console.log('saved room', savedRoom)
+    //     //  Save our room
+    //     const savedRoom = await room.save()
+    //     console.log('saved room', savedRoom)
 
-        //  Let the room know about this
-        io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom)
-    }
+    //     //  Let the room know about this
+    //     io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom)
+    // }
 
     const disconnecting = async function () {
         const socket = this
@@ -851,7 +852,7 @@ module.exports = (io) => {
         nextRound,
         startHalftime,
         stopHalftime,
-        reconnecting,
+        // reconnecting,
         rejoinRoom,
         removePlayer,
     }

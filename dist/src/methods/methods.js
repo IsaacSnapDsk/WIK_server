@@ -141,6 +141,7 @@ module.exports = (io) => {
                 return;
             console.log('player found');
             player.connected = true;
+            player.socketId = socket.id;
             const savedPlayer = yield player.save();
             const room = yield roomModel.findById(roomId);
             if (!room)
@@ -150,45 +151,40 @@ module.exports = (io) => {
             room.players[playerIdx] = player;
             //  Save our room
             const savedRoom = yield room.save();
-            io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom);
+            io.to(roomId).emit('roomUpdateSuccess', savedRoom);
         });
     };
-    const reconnecting = function (socket) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log('recs');
-            // const socket = this
-            console.log('starting reconnect');
-            console.log('socket null', !socket);
-            socket.join();
-            const id = socket === null || socket === void 0 ? void 0 : socket.id;
-            if (!id)
-                return;
-            //  Find the player matching this socket id
-            const player = yield playerModel.findOne({ 'socketId': socket.id });
-            //  If no player was found, then we're good to just stop
-            if (!player)
-                return;
-            console.log('player exists');
-            //  Else, we need to say that this player is now reconnected
-            player.connected = true;
-            //  Save the changes to our player
-            yield player.save();
-            //  Find the room this player might be part of
-            const room = yield roomModel.findOne({ 'players._id': player.id });
-            //  If no room exists? we're done
-            if (!room)
-                return;
-            console.log('room found');
-            //  Else, update the player in this room too
-            const playerIdx = room.players.findIndex((x) => x.id.toString() === player.id.toString());
-            room.players[playerIdx] = player;
-            //  Save our room
-            const savedRoom = yield room.save();
-            console.log('saved room', savedRoom);
-            //  Let the room know about this
-            io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom);
-        });
-    };
+    // const reconnecting = async function (socket) {
+    //     console.log('recs')
+    //     // const socket = this
+    //     console.log('starting reconnect')
+    //     console.log('socket null', !socket)
+    //     socket.join()
+    //     const id = socket?.id
+    //     if (!id) return
+    //     //  Find the player matching this socket id
+    //     const player = await playerModel.findOne({ 'socketId': socket.id })
+    //     //  If no player was found, then we're good to just stop
+    //     if (!player) return
+    //     console.log('player exists')
+    //     //  Else, we need to say that this player is now reconnected
+    //     player.connected = true
+    //     //  Save the changes to our player
+    //     await player.save()
+    //     //  Find the room this player might be part of
+    //     const room = await roomModel.findOne({ 'players._id': player.id })
+    //     //  If no room exists? we're done
+    //     if (!room) return
+    //     console.log('room found')
+    //     //  Else, update the player in this room too
+    //     const playerIdx = room.players.findIndex((x) => x.id.toString() === player.id.toString())
+    //     room.players[playerIdx] = player
+    //     //  Save our room
+    //     const savedRoom = await room.save()
+    //     console.log('saved room', savedRoom)
+    //     //  Let the room know about this
+    //     io.to(room.id.toString()).emit('roomUpdateSuccess', savedRoom)
+    // }
     const disconnecting = function () {
         return __awaiter(this, void 0, void 0, function* () {
             const socket = this;
@@ -723,7 +719,7 @@ module.exports = (io) => {
         nextRound,
         startHalftime,
         stopHalftime,
-        reconnecting,
+        // reconnecting,
         rejoinRoom,
         removePlayer,
     };
