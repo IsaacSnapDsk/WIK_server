@@ -50,6 +50,9 @@ io.on("connection", (socket) => {
     //  If we recovered, handle recovery
     if (socket.recovered) reconnecting
 
+    socket.on('reconnect', console.log(' reconnect'))
+    socket.on('reconnect_attempt', console.log('attempting reconnect'))
+
     //  When disconnecting, we need to set the bool on this player to say they disconnected
     socket.on('disconnecting', disconnecting)
 
